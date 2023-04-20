@@ -1,0 +1,25 @@
+{
+  "name": "uzdevid/yii2-dashboard-base",
+  "description": "Dashboard Base classes",
+  "type": "yii2-extension",
+  "keywords": [
+    "yii2",
+    "module"
+  ],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "IbragimovDiyorbek",
+      "email": "uzdevid@gmail.com"
+    }
+  ],
+  "require": {
+    "yiisoft/yii2": "~2.0.0",
+    "uzdevid/yii2-dashboard": "^1.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "uzdevid\\dashboard\\base\\": ""
+    }
+  }
+}
