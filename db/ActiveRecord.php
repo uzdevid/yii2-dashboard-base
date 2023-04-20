@@ -5,7 +5,7 @@ namespace uzdevid\dashboard\base\db;
 use uzdevid\dashboard\models\ModifyLog;
 use Yii;
 
-class ActiveRecord extends yii\db\ActiveRecord {
+class ActiveRecord extends \yii\db\ActiveRecord {
 
     /**
      * @param $insert

@@ -9,7 +9,7 @@ use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 
-class Controller extends yii\web\Controller {
+class Controller extends \yii\web\Controller {
     /**
      * @throws ForbiddenHttpException
      * @throws BadRequestHttpException
