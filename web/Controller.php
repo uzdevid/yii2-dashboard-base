@@ -2,7 +2,7 @@
 
 namespace uzdevid\dashboard\base\web;
 
-use uzdevid\dashboard\models\Action;
+use uzdevid\dashboard\access\control\models\Action;
 use Yii;
 use yii\helpers\ArrayHelper;
 use yii\web\BadRequestHttpException;
@@ -19,16 +19,18 @@ class Controller extends \yii\web\Controller {
             Yii::$app->response->format = Response::FORMAT_JSON;
         }
 
-        $access = Action::find()->where(['path' => $action->uniqueId])->one();
+        if (class_exists(Action::class)) {
+            $access = Action::find()->where(['path' => $action->uniqueId])->one();
 
-        if (is_null($access)) {
-            throw new BadRequestHttpException(Yii::t('system.message', 'Action not found in permissions'));
-        }
+            if (is_null($access)) {
+                throw new BadRequestHttpException(Yii::t('system.message', 'Action not found in permissions'));
+            }
 
-        $actionUsers = ArrayHelper::map($access->users, 'user_id', 'user_id');
+            $actionUsers = ArrayHelper::map($access->users, 'user_id', 'user_id');
 
-        if (!in_array(Yii::$app->user->id, $actionUsers)) {
-            throw new ForbiddenHttpException(Yii::t('system.message', 'You are not allowed to perform this action.'));
+            if (!in_array(Yii::$app->user->id, $actionUsers)) {
+                throw new ForbiddenHttpException(Yii::t('system.message', 'You are not allowed to perform this action.'));
+            }
         }
 
         return parent::beforeAction($action);
