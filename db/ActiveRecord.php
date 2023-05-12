@@ -14,20 +14,25 @@ class ActiveRecord extends \yii\db\ActiveRecord {
      */
 
     public function afterSave($insert, $changedAttributes): void {
-        if (!class_exists(ModifyLog::class) || !$insert) {
-            parent::afterSave($insert, $changedAttributes);
+        parent::afterSave($insert, $changedAttributes);
+
+        if (!class_exists(ModifyLog::class)) {
             return;
         }
 
-        $modify = new ModifyLog();
-        $modify->user_id = Yii::$app->user->id;
-        $modify->model = $this->tableName();
-        $modify->model_id = $this->id;
-        $modify->attribute = 'this.created';
-        $modify->value = json_encode($this->attributes, JSON_UNESCAPED_UNICODE);
-        $modify->old_value = null;
-        $modify->modify_time = time();
-        $modify->save();
+        if ($insert) {
+            $modify = new ModifyLog();
+            $modify->user_id = Yii::$app->user->id;
+            $modify->model = $this->tableName();
+            $modify->model_id = $this->id;
+            $modify->attribute = 'this.created';
+            $modify->value = json_encode($this->attributes, JSON_UNESCAPED_UNICODE);
+            $modify->old_value = null;
+            $modify->modify_time = time();
+            $modify->save();
+
+            return;
+        }
 
         foreach ($changedAttributes as $key => $value) {
             if ($this->$key == $value) {
@@ -48,6 +53,12 @@ class ActiveRecord extends \yii\db\ActiveRecord {
     }
 
     public function afterDelete() {
+        parent::afterDelete();
+
+        if (!class_exists(ModifyLog::class)) {
+            return;
+        }
+
         $modify = new ModifyLog();
         $modify->user_id = Yii::$app->user->id;
         $modify->model = $this->tableName();
@@ -57,7 +68,5 @@ class ActiveRecord extends \yii\db\ActiveRecord {
         $modify->old_value = json_encode($this->attributes, JSON_UNESCAPED_UNICODE);
         $modify->modify_time = time();
         $modify->save();
-
-        parent::afterDelete();
     }
 }
