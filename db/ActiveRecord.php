@@ -2,7 +2,7 @@
 
 namespace uzdevid\dashboard\base\db;
 
-use uzdevid\dashboard\models\ModifyLog;
+use uzdevid\dashboard\modify\log\models\ModifyLog;
 use Yii;
 
 class ActiveRecord extends \yii\db\ActiveRecord {
