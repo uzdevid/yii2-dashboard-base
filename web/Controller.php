@@ -2,21 +2,18 @@
 
 namespace uzdevid\dashboard\base\web;
 
-use Yii;
-use yii\web\BadRequestHttpException;
-use yii\web\ForbiddenHttpException;
-use yii\web\Response;
+use uzdevid\abac\AccessControl;
 
 class Controller extends \yii\web\Controller {
-    /**
-     * @throws ForbiddenHttpException
-     * @throws BadRequestHttpException
-     */
-    public function beforeAction($action): bool {
-        if (Yii::$app->request->isAjax) {
-            Yii::$app->response->format = Response::FORMAT_JSON;
+    public function behaviors() {
+        $behaviors = parent::behaviors();
+
+        if (class_exists(AccessControl::class)) {
+            $behaviors['AccessControl'] = [
+                'class' => AccessControl::class
+            ];
         }
 
-        return parent::beforeAction($action);
+        return $behaviors;
     }
 }
