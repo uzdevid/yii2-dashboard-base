@@ -2,21 +2,28 @@
 
 namespace uzdevid\dashboard\base\rest;
 
-use Yii;
-use yii\web\BadRequestHttpException;
-use yii\web\ForbiddenHttpException;
-use yii\web\Response;
+use uzdevid\abac\AccessControl;
 
 class Controller extends \yii\rest\Controller {
-    /**
-     * @throws ForbiddenHttpException
-     * @throws BadRequestHttpException
-     */
-    public function beforeAction($action): bool {
-        if (Yii::$app->request->isAjax) {
-            Yii::$app->response->format = Response::FORMAT_JSON;
+    public function behaviors() {
+        $behaviors = parent::behaviors();
+
+        $behaviors['access'] = [
+            'class' => \yii\filters\AccessControl::class,
+            'rules' => [
+                [
+                    'allow' => true,
+                    'roles' => ['@'],
+                ],
+            ],
+        ];
+
+        if (class_exists(AccessControl::class)) {
+            $behaviors['AccessControl'] = [
+                'class' => AccessControl::class
+            ];
         }
 
-        return parent::beforeAction($action);
+        return $behaviors;
     }
 }
